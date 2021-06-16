@@ -29,8 +29,8 @@ Abrimos el archivo y observamos los campos que se encuentran en nuestros datos.
 
 ```{r}
 # Abrir el archivo de datos
-setwd("D:/Archivos")
-WCGS <- read.csv("wcgs.csv")
+#setwd("D:/Archivos")
+WCGS <- read.csv("source/wcgs.csv")
 head(WCGS)
 ```
 
