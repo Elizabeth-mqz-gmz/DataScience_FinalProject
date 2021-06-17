@@ -475,18 +475,13 @@ Ahora analizaremos los mismos datos desde una perspectiva bayesiana.
 ```{r}
 require(BayesFactor)
 
-# t-tes clásico
-t.test(chol~chd69, data = WCGS)
-```
-
-
-```{r}
 ttestBF(x = WCGS$chol[WCGS$chd69 == "Ausencia"], y = WCGS$chol[WCGS$chd69 == "Presencia"])
 
 samples = ttestBF(x = WCGS$chol[WCGS$chd69 == "Ausencia"], y = WCGS$chol[WCGS$chd69 == "Presencia"],
 posterior = TRUE, iterations = 1000)
 plot(samples[,"mu"])
 ```
+El factor calculado es 1.93261e+14 que es muy superior a 1, indicando que nuestras categorías (chol y chd69) estan altamente relacionadas. Es decir, la presencia de enfermedades coronarias tiene una gran influencia en el aumento y/o disminución del colesterol.
 
 
 
