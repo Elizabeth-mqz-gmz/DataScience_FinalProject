@@ -344,7 +344,7 @@ ggplot(Group, aes(x = Colesterol, y = Counts, fill = Coronaria)) +
   geom_bar(stat = "identity", position=position_dodge()) + labs(title = "Número de Pacientes pertenecientes a cada \ngrupo de colesterol y enfermedad cardiovascular", x = "Nivel de colesterol", y = "Número de pacientes") + scale_fill_discrete(name = "Cardiovascular", labels = c("Ausencia", "Presencia"))
 ```
 
-## Analizis de la varianza
+## Análisis de la varianza
 
 Debido a lo anterior, hemos decidido analizar si la diferencia del nivel de colesterol, entre pacientes sanos y enfermos, es significativa. 
 
