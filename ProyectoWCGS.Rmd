@@ -435,14 +435,14 @@ layout <- rbind(c(1,2))
 grid.arrange(grobs = Plots,layout_matrix = layout)
 ```
 
-Los resultados anteriores nos indican que si bien hubo una mejora al normalizar los datos, no fue suficiente para que estos alcanzaran una distribución normal. Este hecho influye profundamente en la decisión de cuál test debe usarse para analizar la distribución de la varianza, ya que, como uno de los conjuntos que se comparan no son de tipo normal, es recomendable recurrir a un test que compare la mediana de la varianza. Por lo tanto, decidí usar el test de **Fligner-Killeen**, ya que es un test no paramétrico que compara las varianzas basándose en la mediana y es una alternativa cuando no se cumple la condición de normalidad en las muestras.
+Los resultados anteriores nos indican que si bien hubo una mejora al normalizar los datos, no fue suficiente para que estos alcanzaran una distribución normal. Este hecho influye profundamente en la decisión de cuál test debe usarse para analizar la distribución de la varianza, ya que como uno de los conjuntos que se comparan no es de tipo normal, es recomendable recurrir a un test que compare la mediana de la varianza. Por lo tanto, decidí usar el test de **Fligner-Killeen**, ya que es un test no paramétrico que compara las varianzas basándose en la mediana y es una alternativa cuando no se cumple la condición de normalidad en las muestras.
 
 ```{r}
 # Comprobar la varianza constante entre grupos (homocedasticidad)
 fligner.test(chol~chd69, WCGS)
 ```
 
-El test de Fligner-Killeen considera como hipótesis nula que la varianza es igual entre los grupos y como hipótesis alternativa que no lo es. El p-value que obtuve es mayor que 0.05, por lo que la varianza de la altura entre mujeres y hombres es igual y por lo tanto se cumple la homocedasticidad. Para analizar la diferencia de la varianza entre ambos conjuntos, decidí usar el test **Wilcoxon rank-sum**, el cual es un test no paramétrico que contrasta si dos muestras proceden de poblaciones equidistribuidas. Elegí esta prueba ya que los datos cumplen con todas sus condiciones:
+El test de Fligner-Killeen considera como hipótesis nula que la varianza es igual entre los grupos y como hipótesis alternativa que no lo es. El p-value que obtuve es mayor que 0.05, por lo que la varianza entre los conjuntos es igual y por lo tanto se cumple la homocedasticidad. Para analizar la diferencia de la varianza entre ambos conjuntos, decidí usar el test **Wilcoxon rank-sum**, el cual es un test no paramétrico que contrasta si dos muestras proceden de poblaciones equidistribuidas. Elegí esta prueba ya que los datos cumplen con todas sus condiciones:
 
     - Los datos son independientes.
     - Los datos del nivel de colesterol son ordinales.
