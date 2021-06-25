@@ -348,7 +348,7 @@ ggplot(Group, aes(x = Colesterol, y = Counts, fill = Coronaria)) +
 
 Debido a lo anterior, hemos decidido analizar si la diferencia del nivel de colesterol, entre pacientes sanos y enfermos, es significativa. 
 
-```{r}
+```{r,message=FALSE}
 # Importar la libreria requerida para realizar la codificacion de datos
 library(qdap)
 ```
@@ -477,13 +477,9 @@ require(BayesFactor)
 
 ttestBF(x = WCGS$chol[WCGS$chd69 == "Ausencia"], y = WCGS$chol[WCGS$chd69 == "Presencia"])
 
-samples = ttestBF(x = WCGS$chol[WCGS$chd69 == "Ausencia"], y = WCGS$chol[WCGS$chd69 == "Presencia"],
-posterior = TRUE, iterations = 1000)
-plot(samples[,"mu"])
+samples = ttestBF(x = WCGS$chol[WCGS$chd69 == "Ausencia"], y = WCGS$chol[WCGS$chd69 == "Presencia"],posterior = TRUE, iterations = 1000)
 ```
 El factor calculado es 1.93261e+14 que es muy superior a 1, indicando que nuestras categorías (chol y chd69) estan altamente relacionadas. Es decir, la presencia de enfermedades coronarias tiene una gran influencia en el aumento y/o disminución del colesterol.
-
-
 
 # Regresion Lineal
 
@@ -599,6 +595,8 @@ Se logra observar bastante dispersión en los residuales lo cual da confianza re
 
 # Regresión múltiple
 
+### Peso
+
 ```{r}
 table(WCGS["chd69"])
 ```
@@ -606,8 +604,8 @@ table(WCGS["chd69"])
 ```{r}
 WCGS$Colesterol <- Values$Colesterol
 WCGS$Edad <- Values$Edad
-WCGS["chd69"][WCGS["chd69"] == "No"] <- 0
-WCGS["chd69"][WCGS["chd69"] == "Yes"] <- 1
+WCGS["chd69"][WCGS["chd69"] == "Ausencia"] <- 0
+WCGS["chd69"][WCGS["chd69"] == "Presencia"] <- 1
 ```
 
 
@@ -632,11 +630,42 @@ ggplot(WCGS, aes(x = sbp, y = NormPeso, color = behpat)) +
   labs(title = "Modelo lineal de variables no significativas", x = "Sistolica", y = "Peso Normalizado", color = "Conducta", shape = "Edad")
 ```
 
+### Colesterol
+
+Ahora que hemos buscado predecir el peso, intentaremos predecir la variable colesterol a partir de un modelo de regresión lineal multiple.
+
+```{r}
+WCGS$NormChol <- bestNormalize(WCGS$chol)$x.t
+```
+
+```{r}
+head(WCGS$NormChol)
+```
+
+```{r}
+modelo_multiple <- lm(data = WCGS , NormChol ~ age + height + sbp + dbp + behpat + bmi + dibpat + smoke )
+summary(modelo_multiple)
+```
+
+```{r}
+# Generar grafico multivariable
+ggplot(WCGS, aes(x = dbp, y = NormChol, color = age)) +
+  geom_smooth(method = lm) +  # añadimos la linea de regresion 
+  geom_point(aes(shape = as.factor(smoke))) +  # agregamos los puntos de las observaciones en color rojo
+  labs(title = "Modelo lineal de variables significativas", x = "DBP", y = "Colesterol Normalizado", color = "Edad", shape = "Fuma")
+```
+
+Este analisis en comparación al de la predicción de peso no parece seguir una tendencia evidente, a pesar de que el modelo lm nos indique que si hay variables significantes, el grafico nos demuestra que hacen falta mas datos y posiblemente mas variables para poder explicar los posibles niveles de colesterol de un paciente.
+
 # Regresión logística
 
 ```{r}
 # Verificar tipo de dato
 typeof(WCGS$chd69)
+```
+
+```{r}
+head(WCGS$chd69)
 ```
 
 
@@ -677,8 +706,14 @@ modelo_logistico_mult <- glm(data = WCGS, chd69 ~  age + height + weight + sbp +
 summary(modelo_logistico_mult)
 ```
 
+```{r}
+# Grafico de modelo logistico
+ggplot(WCGS, aes(x=bmi + chol + sbp + age , y=(chd69))) + 
+  geom_point(alpha=.5) +
+  stat_smooth(method = glm, se = FALSE, method.args = list(family = binomial)) + labs(title = "Grafica de dispersion entre Coronaria e IMC + Col + Edad + SBP", x = "IMC", y = "Coronaria")
+```
 
-
+No se forma la sigmoidea esperada, por lo que significa que hacen falta datos para determinar las personas que presentan una enfermedad coronaria.
 
 
 >>>>>>> 0ddc52315f99eae84bc4c86d004e3e71e44e92db
